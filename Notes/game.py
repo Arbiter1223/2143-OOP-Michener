@@ -1,5 +1,4 @@
 # Pig Game
-
 # Dice class
 #   How many sides? - Data Member
 #   Method - Roll
