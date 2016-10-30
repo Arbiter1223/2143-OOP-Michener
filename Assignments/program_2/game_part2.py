@@ -138,10 +138,14 @@ class Player(object):
     """
     def Roll(self, target_score):
         self.TargetScore = target_score
+        self.Percent = self.TotalScore / self.TargetScore
+        if self.Percent >= .8:
+            self.Strategy = 'Sprint_To_Finish'
+            Score,NumRolls = self.SprintToFinish()
         if self.Strategy == 'Random':
             Score,NumRolls = self.RandomRoll()
         elif self.Strategy == 'Aggressive':
-            pass
+            Score,NumRolls = self.Aggressive()
         elif self.Strategy == 'Cautious':
             pass
         elif self.Strategy == 'Robust':
@@ -168,12 +172,51 @@ class Player(object):
                 break
         
         return (Score,NumRolls)
+
+    def SprintToFinish(self):
+        Score = 0
+        NumRolls = 0
+        while ((Score + self.TotalScore) < self.TargetScore):
+            NumRolls += 1
+            roll = self.pig.Roll()
+            if roll == 0:
+                break
+            Score += roll
+            if (self.TotalScore + Score) >= self.TargetScore:
+                print(self.Name, "has just reached the target score of", self.TargetScore, "and is stopping!")
+                break
+        
+        return (Score,NumRolls)
             
     def Aggressive(self):
-        pass
+        Score = 0
+        NumRolls = 0
+        for i in range((random.randint(1,self.Strategies['Random'])) + 3):
+            NumRolls += 1
+            roll = self.pig.Roll()
+            if roll == 0:
+                break
+            Score += roll
+            if (self.TotalScore + Score) >= self.TargetScore:
+                print(self.Name, "has just reached the target score of", self.TargetScore, "and is stopping!")
+                break
+        
+        return (Score,NumRolls)
         
     def Cautious(self):
-        pass
+        Score = 0
+        NumRolls = 0
+        for i in range((random.randint(1,self.Strategies['Random'])) - 3):
+            NumRolls += 1
+            roll = self.pig.Roll()
+            if roll == 0:
+                break
+            Score += roll
+            if (self.TotalScore + Score) >= self.TargetScore:
+                print(self.Name, "has just reached the target score of", self.TargetScore, "and is stopping!")
+                break
+        
+        return (Score,NumRolls)
 
     def Robust(self):
         pass
